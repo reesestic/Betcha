@@ -74,7 +74,7 @@ export default async function HistoryPage() {
       )}
 
       <footer style={{ marginTop: "4rem", textAlign: "center", color: "#9ca3af", fontSize: "0.8rem" }}>
-        <p>© 2024 Betcha - Group CS391 Final Project</p>
+        <p> Betcha </p>
       </footer>
     </main>
   );
