@@ -1,29 +1,25 @@
 // =========================================================
 // PAGE: Home Page (/)
-// DESCRIPTION: This is the main feed. It fetches active bets 
-// from the API, filtering for "pending" status. It allows 
-// authenticated users to create new bets and resolve current ones.
+// DESCRIPTION: This is the main feed. It fetches the logged-in 
+// user's active bets directly from MongoDB, filtering for "pending" 
+// status. It allows authenticated users to create new bets and resolve current ones.
 // =========================================================
 
 import { auth } from "@/auth";
 import CreateBetForm from "@/components/CreateBetForm";
 import BetCard from "@/components/BetCard";
+import clientPromise from "@/lib/mongodb";
 
-// Helper function to hit our custom Next.js API
-async function getBets() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  
+// Helper function to fetch the logged-in user's pending bets directly from MongoDB
+async function getBets(userId: string) {
   try {
-    const res = await fetch(`${baseUrl}/api/bets`, { 
-      cache: 'no-store' // Ensures we always see fresh data
-    });
-    
-    if (!res.ok) return [];
-    
-    const allBets = await res.json();
-    
-    // LOGIC: Only display bets that are still "pending" on the home feed
-    return allBets.filter((bet: any) => bet.status === "pending");
+    const client = await clientPromise;
+    const db = client.db("betcha");
+    const bets = await db.collection("bets")
+      .find({ userId, status: "pending" })
+      .sort({ createdAt: -1 })
+      .toArray();
+    return bets;
   } catch (error) {
     console.error("Fetch error:", error);
     return [];
@@ -32,7 +28,8 @@ async function getBets() {
 
 export default async function Home() {
   const session = await auth();
-  const activeBets = await getBets();
+  // Only fetch bets if the user is logged in
+  const activeBets = session?.user?.id ? await getBets(session.user.id) : [];
 
   return (
     <main style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
@@ -60,7 +57,7 @@ export default async function Home() {
           </p>
         ) : (
           activeBets.map((bet: any) => (
-            <BetCard key={bet._id} bet={bet} />
+            <BetCard key={bet._id.toString()} bet={{ ...bet, _id: bet._id.toString() }} />
           ))
         )}
       </div>

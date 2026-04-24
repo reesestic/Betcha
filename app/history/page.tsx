@@ -2,7 +2,8 @@
  * =========================================================
  * PAGE: History Page (app/history/page.tsx)
  * DESCRIPTION: Displays a filtered list of resolved bets (Won/Lost).
- * This page ensures only authenticated users can view their betting history.
+ * This page ensures only authenticated users can view their betting history,
+ * and only shows bets that belong to the logged-in user.
  * =========================================================
  */
 
@@ -10,18 +11,18 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import BetCard from "@/components/BetCard";
+import clientPromise from "@/lib/mongodb";
 
-// Helper function to fetch data from our API
-async function getResolvedBets() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  
+// Helper function to fetch resolved bets directly from MongoDB for a specific user
+async function getResolvedBets(userId: string) {
   try {
-    const res = await fetch(`${baseUrl}/api/bets`, { cache: 'no-store' });
-    if (!res.ok) return [];
-    
-    const allBets = await res.json();
-    // Filter logic: Only show bets that are no longer "pending"
-    return allBets.filter((bet: any) => bet.status !== "pending");
+    const client = await clientPromise;
+    const db = client.db("betcha");
+    const bets = await db.collection("bets")
+      .find({ status: { $ne: "pending" }, userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+    return bets;
   } catch (error) {
     console.error("Failed to fetch history:", error);
     return [];
@@ -29,13 +30,13 @@ async function getResolvedBets() {
 }
 
 export default async function HistoryPage() {
-  // Authentication Guard: Redirect to login if no session is found
+  // Authentication Guard: Redirect to home if no session or user id is found
   const session = await auth();
-  if (!session?.user) {
+  if (!session?.user?.id) {
     redirect("/");
   }
 
-  const historyBets = await getResolvedBets();
+  const historyBets = await getResolvedBets(session.user.id);
 
   return (
     <main style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
@@ -67,7 +68,7 @@ export default async function HistoryPage() {
       ) : (
         <div style={{ display: "grid", gap: "1.5rem" }}>
           {historyBets.map((bet: any) => (
-            <BetCard key={bet._id} bet={bet} />
+            <BetCard key={bet._id.toString()} bet={{ ...bet, _id: bet._id.toString() }} />
           ))}
         </div>
       )}

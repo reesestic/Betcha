@@ -17,4 +17,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
     }),
   ],
+  callbacks: {
+    // Expose the user's ID on the session object so we can
+    // use it for ownership checks across the app
+    session({ session, user }) {
+      session.user.id = user.id;
+      return session;
+    },
+  },
 });

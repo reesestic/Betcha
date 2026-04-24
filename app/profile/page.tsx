@@ -7,6 +7,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import clientPromise from "@/lib/mongodb";
 import { calculateStreak } from "@/lib/streakUtils"; 
 import StreakCounter from "@/components/StreakCounter";
@@ -14,15 +15,16 @@ import StreakCounter from "@/components/StreakCounter";
 export default async function ProfilePage() {
   const session = await auth();
 
-  if (!session) {
+  // Authentication Guard: Redirect to home if no session or user id is found
+  if (!session?.user?.id) {
     redirect("/");
   }
 
-  // Fetch only non-pending bets for this user to determine their streak
+  // Fetch only resolved bets for this user to determine their streak
   const client = await clientPromise;
   const db = client.db("betcha");
   const userBets = await db.collection("bets")
-    .find({ creatorName: session.user?.name, status: { $ne: "pending" } })
+    .find({ userId: session.user.id, status: { $ne: "pending" } })
     .sort({ createdAt: -1 }) 
     .toArray();
 
@@ -45,10 +47,12 @@ export default async function ProfilePage() {
         textAlign: "center" 
       }}>
         {/* User Info Header */}
-        <img 
-          src={session.user?.image || ""} 
-          alt="Profile" 
-          style={{ width: "90px", borderRadius: "50%", marginBottom: "1rem", border: "4px solid #f0f2f5" }} 
+        <Image
+          src={session.user?.image || ""}
+          alt="Profile"
+          width={90}
+          height={90}
+          style={{ borderRadius: "50%", marginBottom: "1rem", border: "4px solid #f0f2f5" }}
         />
         <h1 style={{ color: "#2c3e50", margin: "0", fontSize: "1.75rem" }}>{session.user?.name}</h1>
         <p style={{ color: "#95a5a6", marginBottom: "2rem" }}>{session.user?.email}</p>
