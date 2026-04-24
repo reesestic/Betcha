@@ -14,7 +14,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      {/* We use an inline style here or a single global.css file as per the one-external-css rule */}
       <body style={{ margin: 0, fontFamily: "system-ui, sans-serif", backgroundColor: "#f4f6f8" }}>
         <Navbar session={session} />
         {children}

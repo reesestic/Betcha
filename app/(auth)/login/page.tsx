@@ -2,7 +2,7 @@
 // =========================================================
 // PAGE: Custom Login Page (/login)
 // DESCRIPTION: A dedicated, styled login page instead of the 
-// default NextAuth screen. Gives the app a more professional feel.
+// default NextAuth screen.
 // =========================================================
 
 import styled from "styled-components";
