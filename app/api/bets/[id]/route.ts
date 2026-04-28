@@ -1,6 +1,7 @@
 // =========================================================
 // PAGE/API: Dynamic Bet Update Endpoint
 // DESCRIPTION: Handles status updates (Won/Lost) for a specific bet.
+// AUTHOR: Reese Stichter
 // =========================================================
 
 import { NextResponse } from "next/server";

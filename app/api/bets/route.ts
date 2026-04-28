@@ -1,6 +1,7 @@
 // =========================================================
 // PAGE/API: Bets Endpoint
 // DESCRIPTION: Exposes GET and POST methods for the "bets" collection.
+// AUTHOR: Reese Stichter
 // =========================================================
 
 import { NextResponse } from "next/server";
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
     const db = client.db("betcha");
 
     // We explicitly structure the object here to ensure 
-    // "amount" is never accidentally saved if old code calls this.
+    // amount is never accidentally saved if old code calls this.
     // userId is stored to enable per-user filtering and ownership checks.
     const newBet = {
       title: body.title.trim(),

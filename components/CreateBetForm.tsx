@@ -54,7 +54,7 @@ export default function CreateBetForm({ userName }: { userName: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); 
     
-    // API call to the backend. Note: amount is removed.
+    // API call to the backend.
     // We send status: "pending" so it shows up on the dashboard active list.
     await fetch("/api/bets", {
       method: "POST",

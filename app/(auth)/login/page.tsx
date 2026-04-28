@@ -3,6 +3,7 @@
 // PAGE: Custom Login Page (/login)
 // DESCRIPTION: A dedicated, styled login page instead of the 
 // default NextAuth screen.
+// AUTHOR: Anay Sharma
 // =========================================================
 
 import styled from "styled-components";

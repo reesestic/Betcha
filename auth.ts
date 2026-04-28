@@ -2,6 +2,7 @@
 // LOGIC: Authentication Configuration
 // DESCRIPTION: Configures Auth.js to use GitHub OAuth. 
 // Uses the MongoDB adapter to store user sessions in our database.
+// AUTHOR: Anay Sharma
 // =========================================================
 
 import NextAuth from "next-auth";

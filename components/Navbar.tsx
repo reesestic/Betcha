@@ -67,7 +67,7 @@ export default function Navbar({ session }: { session: any }) {
   return (
     <NavContainer>
       {/* Clicking the logo returns user to the dashboard */}
-      <Logo href="/">Betcha 🎲</Logo>
+      <Logo href="/">Betcha</Logo>
       
       <NavGroup>
         {/* These links only appear when a user is logged in */}

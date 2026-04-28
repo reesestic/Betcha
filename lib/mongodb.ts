@@ -2,6 +2,7 @@
 // LOGIC: MongoDB Connection Utility
 // DESCRIPTION: Establishes a cached connection to MongoDB natively. 
 // Prevents our app from opening thousands of connections during hot-reloads.
+// AUTHOR: Anay Sharma
 // =========================================================
 
 import { MongoClient } from "mongodb";

@@ -2,6 +2,7 @@
 // LOGIC: Streak Utilities
 // DESCRIPTION: Helper function isolated from components to test 
 // and calculate consecutive wins based on an array of bet objects.
+// AUTHOR: Jaia Neal
 // =========================================================
 
 export function calculateStreak(bets: any[]): number {
